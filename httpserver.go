@@ -17,7 +17,7 @@ func main() {
 	var configFile string
 	if len(os.Args) > 1 {
 		fmt.Println(os.Args)
-		configFile = os.Args[0]
+		configFile = os.Args[1]
 
 		if len(configFile) == 0 {
 			fmt.Println("need a config file")
@@ -32,7 +32,7 @@ func main() {
 	config := goini.SetConfig(configFile)
 
 	env := config.GetValue("ENV", "env")
-	//port := config.GetValue(env, "port")
+	port := config.GetValue(env, "port")
 	DbUsername := config.GetValue(env, "dbusername")
 	DbPassword := config.GetValue(env, "dbpasswd")
 	DbName := config.GetValue(env, "dbname")
@@ -46,7 +46,6 @@ func main() {
 	}
 
 	m.Map(db)
-	//m.RunOnAddr(":" + port)
 
 	m.Get("/house/:position/list", house.List)
 	m.Get("/house/:position/list/new", house.ListNew)
@@ -57,5 +56,5 @@ func main() {
 		return 200, "hello, world"
 	})
 
-	m.Run()
+	m.RunOnAddr(":" + port)
 }
