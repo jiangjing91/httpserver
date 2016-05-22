@@ -2,14 +2,51 @@
 package main
 
 import (
+	"fmt"
 	"httpserver/house"
+	"os"
+
+	"httpserver/dbaccess"
 
 	"github.com/codegangsta/martini"
+	"github.com/widuu/goini"
 )
 
 func main() {
+
+	var configFile string
+	if len(os.Args) > 1 {
+		fmt.Println(os.Args)
+		configFile = os.Args[0]
+
+		if len(configFile) == 0 {
+			fmt.Println("need a config file")
+			return
+		}
+	} else {
+		configFile = "config.ini"
+	}
+
+	fmt.Println(configFile)
+
+	config := goini.SetConfig(configFile)
+
+	env := config.GetValue("ENV", "env")
+	//port := config.GetValue(env, "port")
+	DbUsername := config.GetValue(env, "dbusername")
+	DbPassword := config.GetValue(env, "dbpasswd")
+	DbName := config.GetValue(env, "dbname")
+
+	db := dbaccess.DbConnect(DbUsername, DbPassword, DbName)
+
 	m := martini.Classic()
-	//house.QueryPositonNew("新龙城")
+
+	if env == "ONLINE" {
+		martini.Env = martini.Prod
+	}
+
+	m.Map(db)
+	//m.RunOnAddr(":" + port)
 
 	m.Get("/house/:position/list", house.List)
 	m.Get("/house/:position/list/new", house.ListNew)

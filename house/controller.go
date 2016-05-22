@@ -1,6 +1,7 @@
 package house
 
 import (
+	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -33,11 +34,11 @@ http.ResponseWriter - http Response writer interface. (响应结果的流接口)
 *http.Request - http Request. （http请求)
 **/
 
-func List(params martini.Params, logger *log.Logger, req *http.Request, res http.ResponseWriter) (int, string) {
+func List(params martini.Params, logger *log.Logger, req *http.Request, res http.ResponseWriter, conn *sql.DB) (int, string) {
 	logger.Println(params)
 
 	if len(strings.TrimSpace(params["position"])) > 0 {
-		sqlRes := QueryPositon(params["position"])
+		sqlRes := QueryPositon(params["position"], conn)
 		logger.Println(sqlRes)
 
 		jsonRes, err := json.Marshal(sqlRes)
@@ -55,11 +56,11 @@ func List(params martini.Params, logger *log.Logger, req *http.Request, res http
 	return 200, ""
 }
 
-func ListNew(params martini.Params, logger *log.Logger, req *http.Request, res http.ResponseWriter) (int, string) {
+func ListNew(params martini.Params, logger *log.Logger, req *http.Request, res http.ResponseWriter, conn *sql.DB) (int, string) {
 	logger.Println(params)
 
 	if len(strings.TrimSpace(params["position"])) > 0 {
-		sqlRes := QueryPositonNew(params["position"], 0)
+		sqlRes := QueryPositonNew(params["position"], 0, conn)
 		logger.Println(sqlRes)
 
 		jsonRes, err := json.Marshal(sqlRes)
@@ -77,7 +78,7 @@ func ListNew(params martini.Params, logger *log.Logger, req *http.Request, res h
 	return 200, ""
 }
 
-func ListHistory(params martini.Params, logger *log.Logger, req *http.Request, res http.ResponseWriter) (int, string) {
+func ListHistory(params martini.Params, logger *log.Logger, req *http.Request, res http.ResponseWriter, conn *sql.DB) (int, string) {
 	logger.Println(params)
 
 	if len(strings.TrimSpace(params["position"])) > 0 && len(strings.TrimSpace(params["date"])) > 0 {
@@ -90,7 +91,7 @@ func ListHistory(params martini.Params, logger *log.Logger, req *http.Request, r
 			panic(err)
 		}
 
-		sqlRes := QueryPositonNew(params["position"], iDate)
+		sqlRes := QueryPositonNew(params["position"], iDate, conn)
 		logger.Println(sqlRes)
 
 		jsonRes, err := json.Marshal(sqlRes)
@@ -108,11 +109,11 @@ func ListHistory(params martini.Params, logger *log.Logger, req *http.Request, r
 	return 200, ""
 }
 
-func ListChanged(params martini.Params, logger *log.Logger, req *http.Request, res http.ResponseWriter) (int, string) {
+func ListChanged(params martini.Params, logger *log.Logger, req *http.Request, res http.ResponseWriter, db *sql.DB) (int, string) {
 	logger.Println(params)
 
 	if len(strings.TrimSpace(params["position"])) > 0 {
-		sqlRes := QueryPositonChanged(params["position"])
+		sqlRes := QueryPositonChanged(params["position"], db)
 		logger.Println(sqlRes)
 
 		jsonRes, err := json.Marshal(sqlRes)

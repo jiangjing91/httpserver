@@ -9,19 +9,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func QueryPositonNew(position string, nowTime int64) HouseList {
-	conn, err := sql.Open("mysql", "root:root@/house")
-
-	if err != nil {
-		panic(err)
-	}
-	defer conn.Close()
-	//defer fmt.Println("db close")
-
-	err = conn.Ping()
-	if err != nil {
-		panic(err)
-	}
+func QueryPositonNew(position string, nowTime int64, conn *sql.DB) HouseList {
 
 	sql := "select house_id, price, total_price, fetch_time, href, position, count(house_id) as cnt from house_uniq where position like ? group by house_id having cnt = 1 and fetch_time > ? order by fetch_time desc"
 
@@ -80,19 +68,7 @@ func QueryPositonNew(position string, nowTime int64) HouseList {
 	return res
 }
 
-func QueryPositon(position string) []HouseRec {
-	conn, err := sql.Open("mysql", "root:root@/house")
-
-	if err != nil {
-		panic(err)
-	}
-	defer conn.Close()
-	//defer fmt.Println("db close")
-
-	err = conn.Ping()
-	if err != nil {
-		panic(err)
-	}
+func QueryPositon(position string, conn *sql.DB) []HouseRec {
 
 	sql := "select house_id, price, min(total_price), min(fetch_time), href, position, count(house_id) as cnt from house_uniq where position like ? group by house_id order by fetch_time desc"
 
@@ -136,19 +112,7 @@ func QueryPositon(position string) []HouseRec {
 	return res
 }
 
-func QueryPositonChanged(position string) HouseList {
-	conn, err := sql.Open("mysql", "root:root@/house")
-
-	if err != nil {
-		panic(err)
-	}
-	defer conn.Close()
-	//defer fmt.Println("db close")
-
-	err = conn.Ping()
-	if err != nil {
-		panic(err)
-	}
+func QueryPositonChanged(position string, conn *sql.DB) HouseList {
 
 	sql := "select a.house_id, a.price, a.total_price, a.fetch_time, a.href, a.position from house_uniq a join (select house_uniq.house_id, count(*) as cnt from house_uniq where position like ? group by house_uniq.house_id having cnt > 1) b on a.house_id = b.house_id order by a.house_id,fetch_time"
 	stmt, err := conn.Prepare(sql)
