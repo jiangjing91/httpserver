@@ -19,6 +19,8 @@ type HouseRec struct {
 	Href       string `json:"href"`
 	Pos        string `json:"pos"`
 	Cnt        string `json:"cnt,omitempty"`
+	Title      string `json:"title,omitempty"`
+	Img        string `json:"img,omitempty"`
 }
 
 type HouseList []HouseRec

@@ -11,13 +11,13 @@ import (
 
 func QueryPositonNew(position string, nowTime int64, conn *sql.DB) HouseList {
 
-	sql := "select house_id, price, total_price, fetch_time, href, position, count(house_id) as cnt from house_uniq where position like ? group by house_id having cnt = 1 and fetch_time > ? order by fetch_time desc"
+	sql := "select house_id, price, total_price, fetch_time, href, position, count(house_id) as cnt,title,img from house_uniq where position like ? group by house_id having cnt = 1 and fetch_time > ? order by fetch_time desc"
 
 	stmt, err := conn.Prepare(sql)
 	if err != nil {
 		panic(err)
 	}
-
+	//fmt.Println(sql)
 	var timeCondition string
 
 	if nowTime == 0 {
@@ -49,7 +49,9 @@ func QueryPositonNew(position string, nowTime int64, conn *sql.DB) HouseList {
 		var href string
 		var pos string
 		var cnt string
-		err = rows.Scan(&house_id, &price, &total_price, &fetch_time, &href, &pos, &cnt)
+		var title string
+		var img string
+		err = rows.Scan(&house_id, &price, &total_price, &fetch_time, &href, &pos, &cnt, &title, &img)
 
 		if err != nil {
 			panic(err)
@@ -62,6 +64,8 @@ func QueryPositonNew(position string, nowTime int64, conn *sql.DB) HouseList {
 		hr.Href = href
 		hr.Pos = pos
 		hr.Cnt = cnt
+		hr.Img = img
+		hr.Title = title
 		//fmt.Println(house_id, price, total_price, fetch_time, href, pos)
 		res = append(res, hr)
 	}
@@ -70,7 +74,7 @@ func QueryPositonNew(position string, nowTime int64, conn *sql.DB) HouseList {
 
 func QueryPositon(position string, conn *sql.DB) []HouseRec {
 
-	sql := "select house_id, price, min(total_price), min(fetch_time), href, position, count(house_id) as cnt from house_uniq where position like ? group by house_id order by fetch_time desc"
+	sql := "select house_id, price, min(total_price), min(fetch_time), href, position, count(house_id) as cnt,title,img from house_uniq where position like ? group by house_id order by fetch_time desc"
 
 	stmt, err := conn.Prepare(sql)
 	if err != nil {
@@ -93,7 +97,9 @@ func QueryPositon(position string, conn *sql.DB) []HouseRec {
 		var href string
 		var pos string
 		var cnt string
-		err = rows.Scan(&house_id, &price, &total_price, &fetch_time, &href, &pos, &cnt)
+		var title string
+		var img string
+		err = rows.Scan(&house_id, &price, &total_price, &fetch_time, &href, &pos, &cnt, &title, &img)
 
 		if err != nil {
 			panic(err)
@@ -106,6 +112,8 @@ func QueryPositon(position string, conn *sql.DB) []HouseRec {
 		hr.Href = href
 		hr.Pos = pos
 		hr.Cnt = cnt
+		hr.Title = title
+		hr.Img = img
 		//fmt.Println(house_id, price, total_price, fetch_time, href, pos)
 		res = append(res, hr)
 	}
@@ -114,7 +122,7 @@ func QueryPositon(position string, conn *sql.DB) []HouseRec {
 
 func QueryPositonChanged(position string, conn *sql.DB) HouseList {
 
-	sql := "select a.house_id, a.price, a.total_price, a.fetch_time, a.href, a.position from house_uniq a join (select house_uniq.house_id, count(*) as cnt from house_uniq where position like ? group by house_uniq.house_id having cnt > 1) b on a.house_id = b.house_id order by a.house_id,fetch_time"
+	sql := "select a.house_id, a.price, a.total_price, a.fetch_time, a.href, a.position,a.title,a.img from house_uniq a join (select house_uniq.house_id, count(*) as cnt from house_uniq where position like ? group by house_uniq.house_id having cnt > 1) b on a.house_id = b.house_id order by a.house_id,fetch_time"
 	stmt, err := conn.Prepare(sql)
 	if err != nil {
 		panic(err)
@@ -143,7 +151,9 @@ func QueryPositonChanged(position string, conn *sql.DB) HouseList {
 		var fetch_time int
 		var href string
 		var pos string
-		err = rows.Scan(&house_id, &price, &total_price, &fetch_time, &href, &pos)
+		var title string
+		var img string
+		err = rows.Scan(&house_id, &price, &total_price, &fetch_time, &href, &pos, &title, &img)
 
 		fmt.Println(house_id)
 
@@ -170,6 +180,8 @@ func QueryPositonChanged(position string, conn *sql.DB) HouseList {
 				rec.FetchTime = fetch_time
 				rec.Href = mapHref[house_id]
 				rec.Pos = mapPosition[house_id]
+				rec.Title = title
+				rec.Img = img
 				mapHouseRec[house_id] = rec
 			}
 		}
@@ -185,6 +197,8 @@ func QueryPositonChanged(position string, conn *sql.DB) HouseList {
 				rec.FetchTime = fetch_time
 				rec.Href = mapHref[house_id]
 				rec.Pos = mapPosition[house_id]
+				rec.Title = title
+				rec.Img = img
 
 				if !mapInList[house_id] {
 					hlist = append(hlist, mapHouseRec[house_id])
@@ -211,6 +225,8 @@ func QueryPositonChanged(position string, conn *sql.DB) HouseList {
 				rec.FetchTime = fetch_time
 				rec.Href = mapHref[house_id]
 				rec.Pos = mapPosition[house_id]
+				rec.Title = title
+				rec.Img = img
 				mapHouseRec[house_id] = rec
 			}
 		}
