@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<!--[if IE 6]>
+<html id="ie6" lang="en-US">
+<![endif]-->
+<!--[if IE 7]>
+<html id="ie7" lang="en-US">
+<![endif]-->
+<!--[if IE 8]>
+<html id="ie8" lang="en-US">
+<![endif]-->
+<!--[if !(IE 6) | !(IE 7) | !(IE 8)  ]><!-->
+<html lang="en-US">
+<!--<![endif]-->
+<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<head>
+<meta charset="UTF-8" />
+<script type="text/javascript" src="http://mat1.gtimg.com/www/asset/lib/jquery/jquery/jquery-1.11.1.min.js"></script>
+</head>
+<body>
+
+
+<span>
+<a href="javascript:posInput('新龙城')" >新龙城_新上</a> 
+<a href="javascript:posInput('新龙城',1)" target="blank">新龙城_调价</a> 
+<a href="javascript:posInput('龙泽')" >龙泽_新上</a> 
+<a href="javascript:posInput('龙泽',1)" target="blank">龙泽_调价</a> 
+<a href="javascript:posInput('龙腾')" >龙腾_新上</a> 
+<a href="javascript:posInput('龙腾',1)" target="blank">龙腾_调价</a>
+</span>
+<span>
+新：<input id="pos" type="text">
+调：<input id="pos1" type="text">
+</span>
+<div id="board"></div>
+</body>
+<script>
+var timeout = 0;
+var baseurl = "115.159.57.118";
+var board = $("#board")
+function ajaxRequest(url, suc){
+	$.ajax(
+		{
+			url: url, 
+			context: board, 
+			success: suc
+		}
+	);
+}
+$("#pos").keyup(function(){
+	var el = $(this)
+	if(timeout){
+		clearTimeout(timeout)
+		timeout = 0
+	}
+	timeout = setTimeout(function(){
+		if(el.val())
+		{
+			var url = "http://" + baseurl +"/house/" + el.val() + "/list/new"
+			ajaxRequest(url, function(data){
+			   data = $.parseJSON(data)
+			   var ul = $("<ul>")
+			   for(var i = 0 ; i < data.length; i++){
+					var html = "<li ";
+					html += "id='" + data[i].house_id + "'>";
+					html += "id:" + data[i].house_id + " ";
+					html += data[i].price + " ";
+					html += data[i].total_price + " ";
+					html += data[i].fetch_time
+					html += "<a href='"+data[i].more +"'>more</a>"
+					html += "</li>"
+					var li = $(html).appendTo(ul);
+				}
+				board.children().remove()
+				ul.appendTo(board);
+			})
+		}
+		
+	}, 500);
+})
+
+$("#pos1").keyup(function(){
+	var el = $(this)
+	if(timeout){
+		clearTimeout(timeout)
+		timeout = 0
+	}
+	timeout = setTimeout(function(){
+		if(el.val())
+		{
+			var url = "http://" + baseurl +"/house/" + el.val() + "/list/changed"
+			var dataMap = {}
+			ajaxRequest(url, function(data){
+			   data = $.parseJSON(data)
+			   var ul = $("<ul>")
+			   for(var i = 0 ; i < data.length; i++){
+					if(!dataMap[data[i].house_id]){
+						var html = "";
+						html += "id:" + data[i].house_id + " ";
+						html += data[i].price + " ";
+						html += data[i].total_price + " ";
+						html += data[i].fetch_time
+						dataMap[data[i].house_id] = html
+					}
+					else
+					{
+						var html = dataMap[data[i].house_id]
+						html += " --> "
+						html += data[i].price + " ";
+						html += data[i].total_price + " ";
+						html += data[i].fetch_time
+						dataMap[data[i].house_id] = html
+					}
+				}
+				for (var i = 0 ; i < data.length; i++){
+					if(dataMap[data[i].house_id]){
+						var html = "<li ";
+						html += "id='" + data[i].house_id + "'>";
+						html += dataMap[data[i].house_id];
+						html += "<a href='"+data[i].more +"'>more</a>"
+						html += "</li>"
+						var li = $(html).appendTo(ul);
+						delete dataMap[data[i].house_id]
+					}
+				}
+				
+				board.children().remove()
+				ul.appendTo(board);
+			})
+		}
+		
+	}, 500);
+})
+function posInput(str, type){
+	if(!type){
+		$("#pos1").val("1")
+		$("#pos").val(str)
+		$("#pos").keyup()
+	}
+	else{
+		$("#pos").val("")
+		$("#pos1").val(str)
+		$("#pos1").keyup()
+	}
+}
+</script>

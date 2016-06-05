@@ -55,6 +55,7 @@ func main() {
 	m.Get("/", func() (int, string) {
 		return 200, "hello, world"
 	})
+	m.Use(martini.Static("web"))
 
 	m.RunOnAddr(":" + port)
 }
