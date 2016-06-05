@@ -69,7 +69,7 @@ $("#pos").keyup(function(){
 					html += data[i].price + " ";
 					html += data[i].total_price + " ";
 					html += data[i].fetch_time
-					html += "<a href='"+data[i].more +"'>more</a>"
+					html += "<a href='"+data[i].href +"'>more</a>"
 					html += "</li>"
 					var li = $(html).appendTo(ul);
 				}
@@ -119,7 +119,7 @@ $("#pos1").keyup(function(){
 						var html = "<li ";
 						html += "id='" + data[i].house_id + "'>";
 						html += dataMap[data[i].house_id];
-						html += "<a href='"+data[i].more +"'>more</a>"
+						html += "<a href='"+data[i].href +"'>more</a>"
 						html += "</li>"
 						var li = $(html).appendTo(ul);
 						delete dataMap[data[i].house_id]
