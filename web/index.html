@@ -24,11 +24,11 @@
 
 <span>
 <a href="javascript:posInput('新龙城')" >新龙城_新上</a> 
-<a href="javascript:posInput('新龙城',1)" target="blank">新龙城_调价</a> 
+<a href="javascript:posInput('新龙城',1)">新龙城_调价</a> 
 <a href="javascript:posInput('龙泽')" >龙泽_新上</a> 
-<a href="javascript:posInput('龙泽',1)" target="blank">龙泽_调价</a> 
+<a href="javascript:posInput('龙泽',1)">龙泽_调价</a> 
 <a href="javascript:posInput('龙腾')" >龙腾_新上</a> 
-<a href="javascript:posInput('龙腾',1)" target="blank">龙腾_调价</a>
+<a href="javascript:posInput('龙腾',1)">龙腾_调价</a>
 </span>
 <span>
 新：<input id="pos" type="text">
@@ -66,6 +66,7 @@ $("#pos").keyup(function(){
 					var html = "<li ";
 					html += "id='" + data[i].house_id + "'>";
 					html += "id:" + data[i].house_id + " ";
+					html += "position:" +  data[i].pos + " ";
 					html += data[i].price + " ";
 					html += data[i].total_price + " ";
 					html += data[i].fetch_time
@@ -99,6 +100,7 @@ $("#pos1").keyup(function(){
 					if(!dataMap[data[i].house_id]){
 						var html = "";
 						html += "id:" + data[i].house_id + " ";
+						html += "position:" + data[i].pos + " ";
 						html += data[i].price + " ";
 						html += data[i].total_price + " ";
 						html += data[i].fetch_time
