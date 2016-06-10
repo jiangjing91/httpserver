@@ -18,6 +18,7 @@
 <head>
 <meta charset="UTF-8" />
 <script type="text/javascript" src="http://mat1.gtimg.com/www/asset/lib/jquery/jquery/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="http://pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500135965" cid="500135966" ></script>
 </head>
 <body>
 
@@ -98,6 +99,7 @@ $("#pos").keyup(function(){
 		if(el.val())
 		{
 			var url = "http://" + baseurl +"/house/" + el.val() + "/list/new"
+			MtaH5.clickStat('queryNew' + el.val());
 			ajaxRequest(url, function(data){
 			   data = $.parseJSON(data)
 			   var ul = $("<ul>")
@@ -138,6 +140,7 @@ $("#pos1").keyup(function(){
 			var url = "http://" + baseurl +"/house/" + el.val() + "/list/changed"
 			var dataMap = {};
 			var boldMap = {};
+			MtaH5.clickStat('queryChange' + el.val());
 			ajaxRequest(url, function(data){
 			   data = $.parseJSON(data)
 			   var ul = $("<ul>")
@@ -189,6 +192,7 @@ $("#pos1").keyup(function(){
 	}, 500);
 })
 function posInput(str, type){
+	MtaH5.clickStat('but' + str +type);
 	if(!type){
 		$("#pos1").val("")
 		$("#pos").val(str)
