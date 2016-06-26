@@ -162,6 +162,7 @@ $("#pos1").keyup(function(){
 						html += data[i].total_price + " ";
 						html += data[i].fetch_time
 						dataMap[data[i].house_id] = html
+					
 						
 						if((data[i].fetch_time + '').substr(0,8) == today)
 						{
@@ -169,7 +170,8 @@ $("#pos1").keyup(function(){
 						}
 					}
 				}
-				for (var i = 0 ; i < data.length; i++){
+				// make sure href is newer
+				for (var i = data.length -1 ; i >= 0; i--){
 					if(dataMap[data[i].house_id]){
 						var html = "<li ";
 						if(boldMap[data[i].house_id]){
@@ -192,13 +194,14 @@ $("#pos1").keyup(function(){
 	}, 500);
 })
 function posInput(str, type){
-	MtaH5.clickStat('but' + str +type);
 	if(!type){
+		MtaH5.clickStat('but_' + str);
 		$("#pos1").val("")
 		$("#pos").val(str)
 		$("#pos").keyup()
 	}
 	else{
+		MtaH5.clickStat('but_' + str);
 		$("#pos").val("")
 		$("#pos1").val(str)
 		$("#pos1").keyup()

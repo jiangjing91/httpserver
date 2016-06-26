@@ -122,7 +122,7 @@ func QueryPositon(position string, conn *sql.DB) []HouseRec {
 
 func QueryPositonChanged(position string, conn *sql.DB) HouseList {
 
-	sql := "select substring(a.house_id, 5) adampt_id, a.house_id, a.price, a.total_price, a.fetch_time, a.href, a.position,a.title,a.img from house_uniq a join (select house_uniq.house_id, count(*) as cnt from house_uniq where position like ? group by house_uniq.house_id having cnt > 1) b on a.house_id = b.house_id order by adampt_id,fetch_time"
+	sql := "select substring(a.house_id, 5) adampt_id, a.house_id, a.price, a.total_price, a.fetch_time, a.href, a.position,a.title,a.img from house_uniq a join (select house_uniq.house_id, count(*) as cnt from house_uniq where position like ? group by house_uniq.house_id having cnt > 1) b on a.house_id = b.house_id order by adampt_id desc, fetch_time asc"
 	stmt, err := conn.Prepare(sql)
 	if err != nil {
 		panic(err)
@@ -156,7 +156,7 @@ func QueryPositonChanged(position string, conn *sql.DB) HouseList {
 		var img string
 		err = rows.Scan(&house_id, &real_id, &price, &total_price, &fetch_time, &href, &pos, &title, &img)
 
-		fmt.Println(house_id)
+		fmt.Println(house_id,href)
 
 		if err != nil {
 			panic(err)
@@ -190,7 +190,7 @@ func QueryPositonChanged(position string, conn *sql.DB) HouseList {
 		if lastHouseId == house_id {
 			if price != lastPrice || lastTotalPrice != total_price {
 				fmt.Println(house_id, lastPrice, lastTotalPrice, lastFetchTime)
-				fmt.Println(house_id, price, total_price, fetch_time, mapHref[house_id], mapPosition[house_id])
+				//fmt.Println(house_id, price, total_price, fetch_time, mapHref[house_id], mapPosition[house_id])
 
 				rec.HouseId = house_id
 				rec.Price = price

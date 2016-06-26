@@ -116,13 +116,13 @@ func ListChanged(params martini.Params, logger *log.Logger, req *http.Request, r
 
 	if len(strings.TrimSpace(params["position"])) > 0 {
 		sqlRes := QueryPositonChanged(params["position"], db)
-		logger.Println(sqlRes)
+//		logger.Println(sqlRes)
 
 		jsonRes, err := json.Marshal(sqlRes)
 		if err != nil {
 			panic(err)
 		}
-		logger.Println(string(jsonRes))
+//		logger.Println(string(jsonRes))
 
 		return 200, string(jsonRes)
 
